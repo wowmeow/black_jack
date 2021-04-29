@@ -1,26 +1,24 @@
-require_relative 'card'
-require_relative 'player'
-require_relative 'user'
-require_relative 'dealer'
-require_relative 'interface'
-
 class Gameplay
-  attr_reader :user, :dealer
+  attr_reader :user, :dealer, :cards, :game_bank
+
+  def initialize
+    @interface = Interface.new
+    @user = @interface.add_user
+    @dealer = Dealer.new
+    @cards = Card.card_deck.shuffle!
+    @game_bank = 0
+  end
 
   def start
-    interface = Interface.new
-    @user = interface.add_user
-    @dealer = Dealer.new
-    # перемешать колоду
-    @cards = Card.card_deck.shuffle!
-    # раздать карты
     give_cards_to(user, 2)
     give_cards_to(dealer, 2)
-    # посмтреть карты
-    interface.show_user_cards(user.cards)
-    interface.show_dealer_cards(dealer.cards)
 
-    @user.total_points
+    @interface.show_user_cards(user.cards)
+    @interface.show_dealer_cards(dealer.cards)
+    @interface.show_card_cost(@user.cards_cost)
+
+    auto_place_bet(10)
+    @interface.show_game_bank(user, dealer, game_bank)
   end
 
   def give_cards_to(player, count)
@@ -28,5 +26,9 @@ class Gameplay
     @cards.drop(count - 1)
   end
 
-
+  def auto_place_bet(money)
+    @user.place_bet(money)
+    @dealer.place_bet(money)
+    @game_bank += 2 * money
+  end
 end

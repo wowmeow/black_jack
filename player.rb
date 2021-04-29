@@ -1,16 +1,16 @@
 class Player
-  attr_reader :cards, :bank, :total_points
+  attr_reader :cards, :money, :total_points
 
   def initialize
-    @bank = initial_money
+    @money = initial_money
     @cards = []
   end
 
   def place_bet(money)
-
+    @money -= money
   end
 
-  def total_points
+  def cards_cost
     cards_cost = 0
     @cards.each do |card|
       rank = begin
