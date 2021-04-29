@@ -10,6 +10,10 @@ class Player
     @money -= money
   end
 
+  def take_money(money)
+    @money += money
+  end
+
   def cards_cost
     cards_cost = 0
     @cards.each do |card|
@@ -37,5 +41,4 @@ class Player
   def initial_money
     100
   end
-
 end
