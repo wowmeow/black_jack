@@ -5,31 +5,37 @@ class Interface
     User.new(user_name)
   end
 
-  def show_face_up(cards)
-    puts 'Ваши карты:'
-    cards.each { |card| print "#{card.rank + card.suit} " }
+  def show_face_up(player)
+    name = player.instance_of?(User) ? player.user_name : 'Дилер'
+    print "Карты игрока #{name}: "
+    player.cards.each { |card| print "#{card.rank + card.suit} " }
     puts
   end
 
-  def show_face_down(cards)
-    puts "Карты дилера: #{'* ' * cards.count}"
+  def show_face_down(player)
+    puts "Карты игрока Дилер: #{'* ' * player.cards.count}"
   end
 
-  def show_card_cost(cards_cost)
-    puts "Сумма Ваших очков: #{cards_cost}"
+  def show_card_cost(player)
+    name = player.instance_of?(User) ? player.user_name : 'Дилер'
+    puts "Сумма очков у игрока #{name}: #{player.cards_cost_of_player}"
+  end
+
+  def show_player_cards_info(player)
+    show_face_up(player)
+    show_card_cost(player)
   end
 
   def show_game_bank(user, dealer, game_bank)
-    puts "\nСтавки сделаны, ставок больше нет!"
-    puts "У вас осталось: #{user.money}$"
-    puts "У дилера осталось: #{dealer.money}$"
+    puts "\nУ Вас: #{user.money}$"
+    puts "У игрока Дилер: #{dealer.money}$"
     puts "В банке игры: #{game_bank}$"
   end
 
   def select_action
     input = 0
     loop do
-      puts "Ваш ход, выберете действие:
+      puts "\nВаш ход, выберете действие:
     1 - пропустить ход
     2 - добавить карту
     3 - открыть карты"
@@ -37,5 +43,9 @@ class Interface
       break if [1, 2, 3].include?(input)
     end
     input
+  end
+
+  def message(text)
+    puts "\n#{text}"
   end
 end

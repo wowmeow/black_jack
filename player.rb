@@ -14,23 +14,14 @@ class Player
     @money += money
   end
 
-  def cards_cost
+  def cards_cost_of_player
     cards_cost = 0
     @cards.each do |card|
-      rank = begin
-        Integer(card.rank)
-      rescue StandardError
-        false
-      end
-      price = if rank
-                rank
-              elsif card.rank == 'J' || card.rank == 'Q' || card.rank == 'K'
+      price = if %w[J Q K].include?(card.rank)
                 10
-              elsif cards_cost + 11 < 21
-                11
-              else
-                1
-              end
+              elsif %w[2 3 4 5 6 7 8 9 10].include?(card.rank) then card.rank.to_i
+              elsif cards_cost + 11 < 21 then 11
+              else 1 end
       cards_cost += price
     end
     cards_cost
