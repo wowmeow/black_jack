@@ -1,5 +1,6 @@
 class Player
-  attr_reader :cards, :money, :total_points
+  attr_reader :money, :total_points
+  attr_accessor :cards
 
   def initialize
     @money = initial_money
@@ -7,7 +8,10 @@ class Player
   end
 
   def place_bet(money)
-    @money -= money
+    if @money - money > 0
+      @money -= money
+    else false
+    end
   end
 
   def take_money(money)

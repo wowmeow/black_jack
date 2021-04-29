@@ -1,7 +1,8 @@
 class Gameplay
   BLACK_JACK = 21
 
-  attr_reader :user, :dealer, :cards, :game_bank, :interface
+  attr_reader :user, :dealer, :game_bank, :interface
+  attr_accessor :cards
 
   def initialize
     @interface = Interface.new
@@ -12,14 +13,25 @@ class Gameplay
   end
 
   def game_circle
-    give_cards_to(@user, 2)
-    give_cards_to(@dealer, 2)
-    @interface.show_player_cards_info(@user)
-    @interface.show_face_down(@dealer)
-    auto_place_bet(initial_bet)
-    @interface.message("Ставки сделаны, ставок больше нет!")
-    @interface.show_game_bank(user, dealer, game_bank)
-    player_steps
+    loop do
+      give_cards_to(@user, 2)
+      give_cards_to(@dealer, 2)
+      @interface.show_player_cards_info(@user)
+      @interface.show_face_down(@dealer)
+      flag = auto_place_bet(initial_bet)
+      if flag == :error
+        @interface.message('Один из игроков банкрот! Игра закончилась :(')
+        exit!
+      end
+      @interface.message("Ставки сделаны, ставок больше нет!")
+      @interface.show_game_bank(user, dealer, game_bank)
+      player_steps
+      break if @interface.play_again? == false
+
+      @cards = Card.card_deck.shuffle!
+      @user.cards = []
+      @dealer.cards = []
+    end
   end
 
   private
@@ -30,9 +42,13 @@ class Gameplay
   end
 
   def auto_place_bet(money)
-    @user.place_bet(money)
-    @dealer.place_bet(money)
-    @game_bank += 2 * money
+    user_bet = @user.place_bet(money)
+    dealer_bet = @dealer.place_bet(money)
+    if user_bet != false && dealer_bet != false
+      @game_bank += 2 * money
+    else
+      :error
+    end
   end
 
   def give_money_to(player, money)
@@ -41,10 +57,16 @@ class Gameplay
   end
 
   def player_steps
+    flag = false
     loop do
-      user_step(@interface.select_action)
+      flag = user_step(@interface.select_action)
+      break if flag == true
+
       dealer_step
-      open_cards if @user.cards.count == 3 && @dealer.cards.count == 3
+      if @user.cards.count == 3 && @dealer.cards.count == 3
+        flag = open_cards
+      end
+      break if flag == true
     end
   end
 
@@ -58,18 +80,20 @@ class Gameplay
 
   def dealer_step
     @interface.message("Ход игрока Дилер")
-    if @dealer.cards_cost_of_player < 17
-      @interface.message('Игрок Дилер взял карту')
+    if @dealer.cards_cost_of_player < 17 && @dealer.cards.count < 3
+      @interface.message("Игрок Дилер взял карту")
       add_card_to_dealer
     else
-      @interface.message('Игрок Дилер пропустил ход')
+      @interface.message("Игрок Дилер пропустил ход")
     end
   end
 
   def add_card_to_user
-    raise "Должно быть ровно 2 карты. У Вас их #{@user.cards.count}." if @user.cards.count != 2
-
-    give_cards_to(@user, 1)
+    if @user.cards.count == 2
+      give_cards_to(@user, 1)
+    else
+      @interface.message("У вас уже максимальное количество карт (3 шт.)")
+    end
     @interface.show_player_cards_info(@user)
   end
 
@@ -82,6 +106,7 @@ class Gameplay
     @interface.show_player_cards_info(@user)
     @interface.show_player_cards_info(@dealer)
     results
+    true
   end
 
   def results
@@ -92,7 +117,6 @@ class Gameplay
     elsif dealer_points <= BLACK_JACK then dealer_wins
     else nobody_wins
     end
-    exit!
   end
 
   def nobody_wins

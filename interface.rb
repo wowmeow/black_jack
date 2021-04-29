@@ -45,6 +45,16 @@ class Interface
     input
   end
 
+  def play_again?
+    input = ''
+    loop do
+      puts "\n\nХотите сыграть еще раз? (да/нет)"
+      input = gets.chomp
+      break if %w[да нет].include?(input)
+    end
+    input != 'нет'
+  end
+
   def message(text)
     puts "\n#{text}"
   end

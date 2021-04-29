@@ -8,4 +8,5 @@ require_relative 'interface'
 class Main
   gameplay = Gameplay.new
   gameplay.game_circle
+  exit!
 end
