@@ -1,8 +1,7 @@
 class Interface
   def add_user
     puts 'Ваше имя:'
-    user_name = gets.chomp
-    User.new(user_name)
+    gets.chomp
   end
 
   def show_face_up(player)

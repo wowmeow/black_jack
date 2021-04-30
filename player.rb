@@ -8,7 +8,7 @@ class Player
   end
 
   def place_bet(money)
-    if @money - money > 0
+    if (@money - money).positive?
       @money -= money
     else false
     end
