@@ -1,8 +1,8 @@
 class User < Player
-  attr_reader :user_name
+  attr_reader :username
 
-  def initialize(user_name = 'guest')
-    super()
-    @user_name = user_name
+  def initialize(hand, username = 'guest')
+    super(hand)
+    @username = username
   end
 end

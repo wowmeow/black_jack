@@ -7,12 +7,12 @@ class Interface
   def show_face_up(player)
     name = player.instance_of?(User) ? player.username : 'Дилер'
     print "Карты игрока #{name}: "
-    player.cards.each { |card| print "#{card.rank + card.suit} " }
+    player.hand.cards.each { |card| print "#{card.rank + card.suit} " }
     puts
   end
 
   def show_face_down(player)
-    puts "Карты игрока Дилер: #{'* ' * player.cards.count}"
+    puts "Карты игрока Дилер: #{'* ' * player.hand.cards.count}"
   end
 
   def show_card_cost(player)
