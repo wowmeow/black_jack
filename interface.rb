@@ -1,11 +1,11 @@
 class Interface
-  def add_user
+  def request_username
     puts 'Ваше имя:'
     gets.chomp
   end
 
   def show_face_up(player)
-    name = player.instance_of?(User) ? player.user_name : 'Дилер'
+    name = player.instance_of?(User) ? player.username : 'Дилер'
     print "Карты игрока #{name}: "
     player.cards.each { |card| print "#{card.rank + card.suit} " }
     puts
@@ -16,8 +16,8 @@ class Interface
   end
 
   def show_card_cost(player)
-    name = player.instance_of?(User) ? player.user_name : 'Дилер'
-    puts "Сумма очков у игрока #{name}: #{player.cards_cost_of_player}"
+    name = player.instance_of?(User) ? player.username : 'Дилер'
+    puts "Сумма очков у игрока #{name}: #{player.hand.cards_cost_in_hand}"
   end
 
   def show_player_cards_info(player)
