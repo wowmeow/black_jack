@@ -1,14 +1,14 @@
 class Gameplay
   BLACK_JACK = 21
+  INITIAL_BET = 10
 
-  attr_reader :user, :dealer, :game_bank, :interface
-  attr_accessor :cards
+  attr_reader :user, :dealer, :game_bank, :interface, :deck
 
-  def initialize
-    @interface = Interface.new
-    @user = @interface.add_user
+  def initialize(interface)
+    @interface = interface
+    @user = User.new(@interface.add_user)
     @dealer = Dealer.new
-    @cards = Card.card_deck.shuffle!
+    @deck = Deck.new
     @game_bank = 0
   end
 
@@ -18,7 +18,7 @@ class Gameplay
       give_cards_to(@dealer, 2)
       @interface.show_player_cards_info(@user)
       @interface.show_face_down(@dealer)
-      flag = auto_place_bet(initial_bet)
+      flag = auto_place_bet(INITIAL_BET)
       if flag == :error
         @interface.message('Один из игроков банкрот! Игра закончилась :(')
         exit!
@@ -28,7 +28,7 @@ class Gameplay
       player_steps
       break if @interface.play_again? == false
 
-      @cards = Card.card_deck.shuffle!
+      @deck = Deck.new
       @user.cards = []
       @dealer.cards = []
     end
@@ -37,8 +37,8 @@ class Gameplay
   private
 
   def give_cards_to(player, count)
-    @cards[0..(count - 1)].each { |card| player.cards << card }
-    @cards.shift(count)
+    @deck.cards[0..(count - 1)].each { |card| player.cards << card }
+    @deck.cards.shift(count)
   end
 
   def auto_place_bet(money)
@@ -63,9 +63,7 @@ class Gameplay
       break if flag == true
 
       dealer_step
-      if @user.cards.count == 3 && @dealer.cards.count == 3
-        flag = open_cards
-      end
+      flag = open_cards if @user.cards.count == 3 && @dealer.cards.count == 3
       break if flag == true
     end
   end
@@ -120,8 +118,8 @@ class Gameplay
   end
 
   def nobody_wins
-    give_money_to(@dealer, initial_bet)
-    give_money_to(@user, initial_bet)
+    give_money_to(@dealer, INITIAL_BET)
+    give_money_to(@user, INITIAL_BET)
     @interface.message("Ничья. Деньги возвращаются обратно игрокам:")
     @interface.show_game_bank(user, dealer, game_bank)
   end
@@ -138,7 +136,4 @@ class Gameplay
     @interface.show_game_bank(user, dealer, game_bank)
   end
 
-  def initial_bet
-    10
-  end
 end
