@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Interface
   def request_username
     puts 'Ваше имя:'

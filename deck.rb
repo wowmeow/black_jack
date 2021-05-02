@@ -1,4 +1,6 @@
-class Deck < Card
+# frozen_string_literal: true
+
+class Deck
   attr_reader :cards
 
   def initialize
@@ -7,9 +9,9 @@ class Deck < Card
 
   def create_deck
     cards = []
-    SUITS.each do |suit_value|
+    suits.each do |suit_value|
       suit = suit_value
-      RANKS.each do |rank_value|
+      ranks.each do |rank_value|
         rank = rank_value
         cards << Card.new(rank, suit)
       end
@@ -19,5 +21,13 @@ class Deck < Card
 
   def shuffle_cards!(cards)
     cards.shuffle!
+  end
+
+  def ranks
+    %w[2 3 4 5 6 7 8 9 10 J Q K A]
+  end
+
+  def suits
+    %w[+ <3 ^ <>]
   end
 end
