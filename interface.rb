@@ -59,4 +59,40 @@ class Interface
   def message(text)
     puts "\n#{text}"
   end
+
+  def message_bets_made
+    puts 'Ставки сделаны, ставок больше нет!'
+  end
+
+  def message_make_move(player)
+    puts "Ход игрока #{player}"
+  end
+
+  def message_taking_card(player)
+    puts "Игрок #{player} взял карту"
+  end
+
+  def message_skipping_move(player)
+    puts "Игрок #{player} пропустил ход"
+  end
+
+  def message_max_cards
+    puts 'У вас уже максимальное количество карт (3 шт.)'
+  end
+
+  def message_win(winner)
+    case winner
+    when :nobody
+      puts 'Ничья. Деньги возвращаются обратно игрокам:'
+    when :user
+      puts 'Поздравляем! Вы выиграли игру.'
+    when :dealer
+      puts 'Выиграл игрок Дилер.'
+    else 'Ошибка!'
+    end
+  end
+
+  def message_game_over
+    puts 'Один из игроков банкрот! Игра закончилась'
+  end
 end

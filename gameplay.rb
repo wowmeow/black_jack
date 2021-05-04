@@ -19,10 +19,10 @@ class Gameplay
       start_game
       flag = auto_place_bet(INITIAL_BET)
       if flag == :error
-        @interface.message('Один из игроков банкрот! Игра закончилась')
+        @interface.message_game_over
         exit!
       end
-      @interface.message('Ставки сделаны, ставок больше нет!')
+      @interface.message_bets_made
       @interface.show_game_bank(user, dealer, game_bank)
       player_steps
       break if @interface.play_again? == false
@@ -85,18 +85,18 @@ class Gameplay
   end
 
   def dealer_step
-    @interface.message('Ход игрока Дилер')
+    @interface.message_make_move(@dealer.name)
     if @dealer.hand.cards_cost_in_hand < 17 && @dealer.hand.enough_cards?(2)
-      @interface.message('Игрок Дилер взял карту')
+      @interface.message_taking_card(@dealer.name)
       add_card_to_dealer
-    else @interface.message('Игрок Дилер пропустил ход')
+    else @interface.message_skipping_move(@dealer.name)
     end
   end
 
   def add_card_to_user
     if @user.hand.enough_cards?(2)
       give_cards_to(@user, 1)
-    else @interface.message('У вас уже максимальное количество карт (3 шт.)')
+    else @interface.message_max_cards
     end
     @interface.show_player_cards_info(@user)
   end
@@ -126,19 +126,19 @@ class Gameplay
   def nobody_wins
     give_money_to(@dealer, INITIAL_BET)
     give_money_to(@user, INITIAL_BET)
-    @interface.message('Ничья. Деньги возвращаются обратно игрокам:')
+    @interface.message_win(:nobody)
     @interface.show_game_bank(user, dealer, game_bank)
   end
 
   def user_wins
     give_money_to(@user, @game_bank)
-    @interface.message('Поздравляем! Вы выиграли игру.')
+    @interface.message_win(:user)
     @interface.show_game_bank(user, dealer, game_bank)
   end
 
   def dealer_wins
     give_money_to(@dealer, @game_bank)
-    @interface.message('Выиграл игрок Дилер.')
+    @interface.message_win(:dealer)
     @interface.show_game_bank(user, dealer, game_bank)
   end
 end
