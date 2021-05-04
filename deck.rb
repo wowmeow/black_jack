@@ -9,9 +9,9 @@ class Deck
 
   def create_deck
     cards = []
-    SUITS.each do |suit_value|
+    Card::SUITS.each do |suit_value|
       suit = suit_value
-      RANKS.each do |rank_value|
+      Card::RANKS.each do |rank_value|
         rank = rank_value
         cards << Card.new(rank, suit)
       end
